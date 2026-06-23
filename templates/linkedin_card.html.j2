@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  Répertoire Group — LinkedIn 4:5 hook card (1080 x 1350)
+  Renderer: Playwright / Chromium (full CSS support assumed)
+  Screenshot the .card element, or set viewport 1080x1350 and screenshot full page.
+  IMPORTANT: pass the hero image as a data URI (base64) into hero_image_url to avoid
+  Google Drive redirect/cookie issues when headless Chromium fetches a uc?export link.
+  Wait for fonts before screenshot: await page.evaluate(() => document.fonts.ready)
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15100C;        /* warm espresso, the panel base            */
+    --ivory:#F3ECE0;      /* warm off-white, the hook type            */
+    --ivory-dim:#BFB3A2;  /* muted ivory, eyebrow / footer            */
+    --brass:#C19A5B;      /* single restrained metallic accent        */
+    --pad:88px;           /* outer safe margin                        */
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{font-family:"Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+  .card{
+    position:relative;width:1080px;height:1350px;overflow:hidden;
+    background:#0c0907 center/cover no-repeat;
+    background-image:url('{{ hero_image_url }}');
+  }
+
+  /* Brand wordmark, top-left, kept subtle with a legibility shadow */
+  .mark{
+    position:absolute;top:var(--pad);left:var(--pad);z-index:3;
+    font-family:"Inter";font-weight:600;font-size:26px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--ivory);
+    text-shadow:0 2px 18px rgba(0,0,0,.55);
+  }
+
+  /* Scrim: blends the photo into the panel so the edge never reads as a hard cut */
+  .scrim{
+    position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,
+      rgba(12,9,7,0) 38%,
+      rgba(12,9,7,.18) 56%,
+      rgba(12,9,7,.55) 74%,
+      rgba(12,9,7,.78) 100%);
+  }
+
+  /* The signature: an espresso panel anchored bottom, brass top-rule, generous air */
+  .panel{
+    position:absolute;left:var(--pad);right:var(--pad);bottom:var(--pad);z-index:2;
+    background:rgba(21,16,12,.93);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    padding:56px 60px 52px;
+  }
+  .rule{width:72px;height:3px;background:var(--brass);margin-bottom:26px}
+
+  .eyebrow{
+    font-family:"Inter";font-weight:600;font-size:23px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--brass);margin-bottom:26px;
+  }
+  .eyebrow .dot{color:var(--ivory-dim);margin:0 12px;font-weight:400}
+  .eyebrow .market{color:var(--ivory-dim)}
+
+  /* Optional stat lockup for stat-led posts */
+  {% if stat_value %}
+  .statline{display:flex;align-items:baseline;gap:20px;margin-bottom:22px}
+  .stat-num{font-family:"Fraunces";font-weight:600;font-size:128px;line-height:.9;color:var(--brass)}
+  .stat-lab{font-family:"Inter";font-weight:500;font-size:30px;line-height:1.25;color:var(--ivory);max-width:540px}
+  {% endif %}
+
+  .hook{
+    font-family:"Fraunces";font-weight:500;color:var(--ivory);
+    font-size:{{ hook_size | default(66) }}px;line-height:1.08;
+    letter-spacing:-0.01em;text-wrap:balance;
+  }
+  .hook em{font-style:italic;color:var(--brass)}
+
+  .footer{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:44px;padding-top:26px;border-top:1px solid rgba(191,179,162,.22);
+    font-family:"Inter";font-size:22px;color:var(--ivory-dim);
+  }
+  .footer .name{letter-spacing:.06em}
+  .footer .url{letter-spacing:.02em}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">{{ wordmark | default('Répertoire') }}</div>
+    <div class="scrim"></div>
+    <div class="panel">
+      <div class="rule"></div>
+      <div class="eyebrow">
+        {{ category }}<span class="dot">&bull;</span><span class="market">{{ market }}</span>
+      </div>
+
+      {% if stat_value %}
+      <div class="statline">
+        <div class="stat-num">{{ stat_value }}</div>
+        <div class="stat-lab">{{ stat_label }}</div>
+      </div>
+      {% endif %}
+
+      <div class="hook">{{ hook }}</div>
+
+      <div class="footer">
+        <span class="name">RÉPERTOIRE GROUP</span>
+        <span class="url">{{ brand_url }}</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
