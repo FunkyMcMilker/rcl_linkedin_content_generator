@@ -31,13 +31,13 @@
     background-image:url('{{ hero_image_url }}');
   }
 
-  /* Brand wordmark, top-left, kept subtle with a legibility shadow */
+  /* Brand logo, top-left, kept subtle with a legibility shadow */
   .mark{
     position:absolute;top:var(--pad);left:var(--pad);z-index:3;
-    font-family:"Inter";font-weight:600;font-size:26px;letter-spacing:.32em;
-    text-transform:uppercase;color:var(--ivory);
-    text-shadow:0 2px 18px rgba(0,0,0,.55);
+    width:240px;
+    filter:drop-shadow(0 2px 18px rgba(0,0,0,.55));
   }
+  .mark svg{display:block;width:100%;height:auto}
 
   /* Scrim: blends the photo into the panel so the edge never reads as a hard cut */
   .scrim{
@@ -90,7 +90,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="mark">{{ wordmark | default('Répertoire') }}</div>
+    <div class="mark">{{ logo_svg | safe }}</div>
     <div class="scrim"></div>
     <div class="panel">
       <div class="rule"></div>

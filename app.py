@@ -13,6 +13,10 @@ env = Environment(
     autoescape=select_autoescape(["html", "j2"]),
 )
 
+# Brand logo, inlined into the card so headless Chromium never has to fetch it.
+with open(os.path.join(TEMPLATE_DIR, "RCL_Logo_White_Condensed.svg"), encoding="utf-8") as f:
+    LOGO_SVG_WHITE = f.read()
+
 # Optional shared secret. If set in Railway, the Make HTTP module must send
 # Authorization: Bearer <RENDER_TOKEN>. If unset, the endpoint is open.
 RENDER_TOKEN = os.environ.get("RENDER_TOKEN")
@@ -32,7 +36,10 @@ def render():
     if not data.get("hero_image_url") or not (data.get("hook") or data.get("stat_value")):
         abort(400, "hero_image_url and either hook or stat_value are required")
 
-    html = env.get_template("linkedin_card.html.j2").render(**data)
+    html = env.get_template("linkedin_card.html.j2").render(
+        logo_svg=LOGO_SVG_WHITE,
+        **data,
+    )
 
     with sync_playwright() as p:
         browser = p.chromium.launch(args=["--no-sandbox"])
